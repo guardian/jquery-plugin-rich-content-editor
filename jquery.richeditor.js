@@ -3,6 +3,7 @@
     Version: 0.1
 */
 (function($) {
+
     var buttonConfigs = {
         bold: {
             text: 'B',
@@ -67,6 +68,17 @@
             btnElm.bind('mousedown', function(e) {
                 e.preventDefault();
                 var param = (btn.action) ? btn.action() : false;
+                // Force content editable not to use inline style
+                try {
+                    document.execCommand("styleWithCSS", false, false);
+                } catch (e) {
+                    try {
+                        Editor.execCommand("useCSS", false, true);
+                    } catch (e) {
+                        // Do something else?
+                    }
+                }
+
                 document.execCommand(btn.execCommand, false, param);
             });
 
@@ -135,8 +147,7 @@
             var controls = buildControls(config.buttons);
 
             editorContainer.append(controls);
-            editorContainer.attr('id', this.attr('id'))
-            ;
+            editorContainer.attr('id', this.attr('id'));
             editorPane.attr('contenteditable', 'true');
             editorPane.bind('paste', pasteClipboard);
 
